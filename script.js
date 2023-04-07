@@ -3,6 +3,14 @@ const videoElement = document.getElementsByClassName("input_video")[0];
 const canvasElement = document.getElementsByClassName("output_canvas")[0];
 const canvasCtx = canvasElement.getContext("2d");
 const sound = document.getElementById("sound");
+const column1 = document.getElementById("column1");
+const column2 = document.getElementById("column2");
+const column3 = document.getElementById("column3");
+const column4 = document.getElementById("column4");
+const column5 = document.getElementById("column5");
+const column6 = document.getElementById("column6");
+const column7 = document.getElementById("column7");
+const column8 = document.getElementById("column8");
 canvasElement.width = window.innerWidth;
 canvasElement.height = window.innerHeight;
 
@@ -43,7 +51,7 @@ const plucked_violin = new Tone.Sampler({
     C4: "Plucked_Violin.mp3",
     C5: "Plucked_Violin_High.mp3",
   },
-  baseUrl: "https://monlim.github.io/HandHarp/audio/plucked_violin/",
+  baseUrl: "https://monlim.github.io/Handmate-DoReMi/audio/plucked_violin/",
 }).toDestination();
 
 //listen for changes to sound
@@ -63,7 +71,7 @@ sound.addEventListener("change", function () {
 });
 
 let major = [null, "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", null];
-let minor = [null, "C4", "D4", "D#4", "F4", "G4", "G#4", "B4", "C5", null];
+let minor = [null, "C4", "D4", "Eb4", "F4", "G4", "Ab4", "B4", "C5", null];
 let currentScale = major;
 let scaleArray = [null, "C4", "D4", "E4", "F4", "G4", "A4", "B4", "C5", null];
 
@@ -72,6 +80,14 @@ tonic.addEventListener("change", function () {
     .map((pc) => Tonal.transpose(pc, tonic.value))
     .map((pc) => Tonal.transpose(pc, octave.value));
   //console.log(scaleArray);
+  column1.innerHTML = scaleArray[1];
+  column2.innerHTML = scaleArray[2];
+  column3.innerHTML = scaleArray[3];
+  column4.innerHTML = scaleArray[4];
+  column5.innerHTML = scaleArray[5];
+  column6.innerHTML = scaleArray[6];
+  column7.innerHTML = scaleArray[7];
+  column8.innerHTML = scaleArray[8];
 });
 
 mode.addEventListener("change", function () {
@@ -85,6 +101,14 @@ mode.addEventListener("change", function () {
     currentScale = minor;
     scaleArray = currentScale.map((pc) => Tonal.transpose(pc, tonic.value));
   }
+  column1.innerHTML = scaleArray[1];
+  column2.innerHTML = scaleArray[2];
+  column3.innerHTML = scaleArray[3];
+  column4.innerHTML = scaleArray[4];
+  column5.innerHTML = scaleArray[5];
+  column6.innerHTML = scaleArray[6];
+  column7.innerHTML = scaleArray[7];
+  column8.innerHTML = scaleArray[8];
   //console.log(scaleArray);
 });
 
@@ -92,6 +116,14 @@ octave.addEventListener("change", function () {
   scaleArray = currentScale
     .map((pc) => Tonal.transpose(pc, tonic.value))
     .map((pc) => Tonal.transpose(pc, octave.value));
+  column1.innerHTML = scaleArray[1];
+  column2.innerHTML = scaleArray[2];
+  column3.innerHTML = scaleArray[3];
+  column4.innerHTML = scaleArray[4];
+  column5.innerHTML = scaleArray[5];
+  column6.innerHTML = scaleArray[6];
+  column7.innerHTML = scaleArray[7];
+  column8.innerHTML = scaleArray[8];
   //console.log(scaleArray);
 });
 
@@ -103,11 +135,16 @@ let noteActivate = 2.5;
 
 function triggerLeftNote(finger) {
   let noteIndex = Math.floor(finger.x * 10);
+  let column = "column" + noteIndex;
   let note = scaleArray[noteIndex];
   if (accelLeft && note && accelLeft >= noteActivate) {
     if (leftNoteTrigger) return;
     leftNoteTrigger = true;
     synth.triggerAttackRelease([note], 0.5);
+    document.getElementById(column).style.opacity = "90%";
+    setTimeout(function () {
+      document.getElementById(column).style.opacity = "50%";
+    }, 500);
   }
   if (accelLeft && accelLeft < noteDeactivate) {
     leftNoteTrigger = false;
@@ -116,11 +153,16 @@ function triggerLeftNote(finger) {
 
 function triggerRightNote(finger) {
   let noteIndex = Math.floor(finger.x * 10);
+  let column = "column" + noteIndex;
   let note = scaleArray[noteIndex];
   if (accelRight && note && accelRight >= noteActivate) {
     if (rightNoteTrigger) return;
     rightNoteTrigger = true;
     synth.triggerAttackRelease([note], 0.5);
+    document.getElementById(column).style.opacity = "90%";
+    setTimeout(function () {
+      document.getElementById(column).style.opacity = "50%";
+    }, 500);
   }
   if (accelRight && accelRight < noteDeactivate) {
     rightNoteTrigger = false;
