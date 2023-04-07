@@ -43,7 +43,7 @@ const plucked_violin = new Tone.Sampler({
     C4: "Plucked_Violin.mp3",
     C5: "Plucked_Violin_High.mp3",
   },
-  baseUrl: "https://monlim.github.io/Handmate-DoReMi/audio/plucked_violin/",
+  baseUrl: "https://monlim.github.io/HandHarp/audio/plucked_violin/",
 }).toDestination();
 
 //listen for changes to sound
