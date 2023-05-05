@@ -130,8 +130,10 @@ octave.addEventListener("change", function () {
 //Trigger note if hand moves
 let leftNoteTrigger = false;
 let rightNoteTrigger = false;
+let speedLimitLeft = false;
+let speedLimitRight = false;
 let noteDeactivate = 0.22;
-let noteActivate = 2.5;
+let noteActivate = 5;
 
 function triggerLeftNote(finger) {
   let noteIndex = Math.floor(finger.x * 10);
@@ -140,7 +142,11 @@ function triggerLeftNote(finger) {
   if (accelLeft && note && accelLeft >= noteActivate) {
     if (leftNoteTrigger) return;
     leftNoteTrigger = true;
+    speedLimitLeft = true;
     synth.triggerAttackRelease([note], 0.5);
+    setTimeout(function () {
+      speedLimitLeft = false;
+    }, 250);
     document.getElementById(column).style.opacity = "90%";
     setTimeout(function () {
       document.getElementById(column).style.opacity = "50%";
@@ -157,8 +163,13 @@ function triggerRightNote(finger) {
   let note = scaleArray[noteIndex];
   if (accelRight && note && accelRight >= noteActivate) {
     if (rightNoteTrigger) return;
+     if (speedLimitRight) return;
     rightNoteTrigger = true;
+    speedLimitRight = true;
     synth.triggerAttackRelease([note], 0.5);
+    setTimeout(function () {
+      speedLimitRight = false;
+    }, 250);
     document.getElementById(column).style.opacity = "90%";
     setTimeout(function () {
       document.getElementById(column).style.opacity = "50%";
@@ -180,12 +191,12 @@ let xNowLeft = 0.4,
   accelRight = 0; // default values to start off distance calculation;
 
 function leftVelocityCounter(leftIndexX, leftIndexY) {
-  xVelocityLeft = (leftIndexX - xNowLeft) / 0.1;
-  yVelocityLeft = (leftIndexY - yNowLeft) / 0.1;
+  xVelocityLeft = (leftIndexX - xNowLeft) / 0.05;
+  yVelocityLeft = (leftIndexY - yNowLeft) / 0.05;
   stillLeft =
     Math.sqrt((leftIndexX - xNowLeft) ** 2 + (leftIndexY - yNowLeft) ** 2) /
-    0.1;
-  accelLeft = Math.abs(stillLeft - velNowLeft) / 0.1;
+    0.05;
+  accelLeft = Math.abs(stillLeft - velNowLeft) / 0.05;
   xNowLeft = leftIndexX;
   yNowLeft = leftIndexY;
   velNowLeft = stillLeft;
@@ -194,12 +205,12 @@ function leftVelocityCounter(leftIndexX, leftIndexY) {
 let xNowRight = 0.6,
   yNowRight = 0; // default values to start off distance calculation;
 function rightVelocityCounter(rightIndexX, rightIndexY) {
-  xVelocityRight = (rightIndexX - xNowRight) / 0.1;
-  yVelocityRight = (rightIndexY - yNowRight) / 0.1;
+  xVelocityRight = (rightIndexX - xNowRight) / 0.05;
+  yVelocityRight = (rightIndexY - yNowRight) / 0.05;
   stillRight =
     Math.sqrt((rightIndexX - xNowRight) ** 2 + (rightIndexY - yNowRight) ** 2) /
-    0.1;
-  accelRight = Math.abs(stillRight - velNowRight) / 0.1;
+    0.05;
+  accelRight = Math.abs(stillRight - velNowRight) / 0.05;
   xNowRight = rightIndexX;
   yNowRight = rightIndexY;
   velNowRight = stillRight;
@@ -239,11 +250,11 @@ function onResults(results) {
         });
       if (isRightHand === false) {
         leftIndex = landmarks[12];
-        setInterval(leftVelocityCounter(leftIndex.x, leftIndex.y), 100);
+        setInterval(leftVelocityCounter(leftIndex.x, leftIndex.y), 50);
         //draw(leftIndex.x, leftIndex.y);
       } else {
         rightIndex = landmarks[12];
-        setInterval(rightVelocityCounter(rightIndex.x, rightIndex.y), 100);
+        setInterval(rightVelocityCounter(rightIndex.x, rightIndex.y), 50);
         //draw(rightIndex.x, rightIndex.y);
       }
       canvasCtx.restore();
